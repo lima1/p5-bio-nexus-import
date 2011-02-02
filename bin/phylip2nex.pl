@@ -99,10 +99,6 @@ Print the version information and exit.
 
 L<Bio::NEXUS::Import>
 
-=head1 AUTHOR
-
-Markus Riester (mriester@gmx.de)
-
 =head1 DISCLAIMER OF WARRANTY
 
 BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
