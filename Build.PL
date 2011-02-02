@@ -18,6 +18,11 @@ my $builder = Module::Build->new(
     script_files        => [ 
                   'bin/phylip2nex.pl',
                            ],
+    meta_merge => {
+        resources => {
+            repository => 'http://github.com/lima1/p5-bio-nexus-import',
+        },
+    },
     add_to_cleanup      => [ 'Bio-NEXUS-Import-*' ],
 );
 

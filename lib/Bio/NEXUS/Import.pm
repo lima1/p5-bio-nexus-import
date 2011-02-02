@@ -9,7 +9,7 @@ use Bio::NEXUS::Functions;
 
 use base 'Bio::NEXUS';
 
-use version; our $VERSION = qv('0.1.0');
+use version; our $VERSION = qv('0.2.0');
 
 sub new {
     my ( $class, $filename, $fileformat, $verbose ) = @_;

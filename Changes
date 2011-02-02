@@ -1,5 +1,9 @@
 Revision history for Bio-NEXUS-Import
 
+0.2.0  Thu Apr 17 13:24:00 2008
+       - moved author tests to xt
+       - github 
+
 0.1.0  Thu Apr 17 13:24:00 2008
        - added LICENSE file
        - perlcritic
