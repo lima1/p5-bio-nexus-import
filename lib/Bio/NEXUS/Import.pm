@@ -17,11 +17,15 @@ sub new {
     bless $self, $class;
     $self->{'supported_file_formats'} = {
         'phylip' => {
-            'PHYLIP_DIST_SQUARE'     => 1,
-            'PHYLIP_DIST_LOWER'      => 1,
-            'PHYLIP_DIST_UPPER'      => 1,
-            'PHYLIP_SEQ_INTERLEAVED' => 1,
-            'PHYLIP_SEQ_SEQUENTIAL'  => 1,
+            'PHYLIP_DIST_SQUARE'           => 1,
+            'PHYLIP_DIST_LOWER'            => 1,
+            'PHYLIP_DIST_SQUARE_BLANK'     => 1,
+            'PHYLIP_DIST_LOWER_BLANK'      => 1,
+            'PHYLIP_DIST_UPPER'            => 1,
+            'PHYLIP_SEQ_INTERLEAVED'       => 1,
+            'PHYLIP_SEQ_SEQUENTIAL'        => 1,
+            'PHYLIP_SEQ_INTERLEAVED_BLANK' => 1,
+            'PHYLIP_SEQ_SEQUENTIAL_BLANK'  => 1,
         },
         'nexus' => { 'NEXUS' => 1 },
     };
@@ -90,11 +94,26 @@ sub _detect_fileformat {
     }
     elsif ( $filecontent->[0] =~ m{\A \s* (\d+) \s* \z}xms ) {
         my $number_taxa = $1;
-        if ( length $filecontent->[1] <= 10 ) {
-            return 'PHYLIP_DIST_LOWER';
+        my @fields = split( /\s+/, $filecontent->[1] );
+        if ( length $filecontent->[1] <= 10
+            || scalar(@fields) == 1 )
+        {
+            for my $i ( 1 .. ( scalar( @{$filecontent} ) - 1 ) ) {
+                my @fields2 = split( /\s+/, $filecontent->[$i] );
+                if ( scalar @fields2 != $i ) {
+                    return 'PHYLIP_DIST_LOWER';
+                }
+            }
+            return 'PHYLIP_DIST_LOWER_BLANK';
         }
         else {
-            return 'PHYLIP_DIST_SQUARE';
+            for my $i ( 1 .. ( scalar( @{$filecontent} ) - 1 ) ) {
+                my @fields2 = split( /\s+/, $filecontent->[$i] );
+                if ( scalar @fields2 != $number_taxa + 1 ) {
+                    return 'PHYLIP_DIST_SQUARE';
+                }
+            }
+            return 'PHYLIP_DIST_SQUARE_BLANK';
         }
     }
     elsif ( $filecontent->[0] =~ m{\A \s* \#NEXUS \s* \z}xms ) {
@@ -177,8 +196,16 @@ LINE:
         if ( !$taxon_started ) {
             $taxon_id++;
 
-            # first 10 chars are the labels
-            my ( $label, $data ) = $line =~ m{ \A (.{10})(.*) \z }xms;
+            my ( $label, $data );
+
+            if ( $ff =~ m{blank\z}xms ) {
+                ( $label, $data ) = $line =~ m{ \A (.*?)\s+(.*) \z }xms;
+            }
+            else {
+
+                # first 10 chars are the labels
+                ( $label, $data ) = $line =~ m{ \A (.{10})(.*) \z }xms;
+            }
 
             # undefined? then we have only one label, no data
             # for example in the first row of a lower distmatrix
@@ -372,8 +399,11 @@ phylogeny programs.
  Usage   : Bio::NEXUS::Import->import_file($filename, $fileformat, $verbose);
  Function: Reads the contents of the specified file and populate the data 
            in the Bio::NEXUS object.
-           Supported fileformats are NEXUS, PHYLIP_DIST_SQUARE, PHYLIP_DIST_LOWER,
-           PHYLIP_SEQ_INTERLEAVED, PHYLIP_SEQ_SEQUENTIAL.
+           Supported fileformats are NEXUS, PHYLIP_DIST_SQUARE,
+           PHYLIP_DIST_SQUARE_BLANK, PHYLIP_DIST_LOWER,
+           PHYLIP_DIST_LOWER_BLANK, PHYLIP_SEQ_INTERLEAVED,
+           PHYLIP_SEQ_INTERLEAVED_BLANK, PHYLIP_SEQ_SEQUENTIAL, 
+           PHYLIP_SEQ_SEQUENTIAL_BLANK.
            If $fileformat is not defined, then this function tries to
            detect the correct format. NEXUS files are parsed with
            Bio::NEXUS->read_file();
@@ -468,11 +498,31 @@ Below a collection of examples of all supported file formats:
     Delta      3.000 3.000 0.000 0.000 1.000
     Epsilon    3.000 3.000 3.000 1.000 0.000
 
+=item C<PHYLIP_DIST_SQUARE_BLANK>
+
+        5
+    Alpha_Long_Taxon 0.000 1.000 2.000 3.000 3.000
+    Beta 1.000 0.000 2.000 3.000 3.000
+    Gamma 2.000 2.000 0.000 3.000 3.000
+    Delta 3.000 3.000 0.000 0.000 1.000
+    Epsilon 3.000 3.000 3.000 1.000 0.000
+
+
 =item C<PHYLIP_DIST_LOWER>
 
 
         5
     Alpha      
+    Beta       1.00
+    Gamma      3.00 3.00
+    Delta      3.00 3.00 2.00
+    Epsilon    3.00 3.00 2.00 1.00
+
+=item C<PHYLIP_DIST_LOWER_BLANK>
+
+
+        5
+    Alpha_Long_Taxon      
     Beta       1.00
     Gamma      3.00 3.00
     Delta      3.00 3.00 2.00
