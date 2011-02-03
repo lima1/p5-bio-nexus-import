@@ -59,7 +59,7 @@ eval {
 };
 #warn Dumper $distances_block;
 is_deeply($taxa_block->get_taxlabels, ['Mouse',  'Bovine', 'Lemur',
-    'Tarsier',  'Squir Monk'  ,'Jpn Macaq' ,'Rhesus Mac' , 'Crab-E.Mac' ,
+    'Tarsier',  'Squir_Monk'  ,'Jpn_Macaq' ,'Rhesus_Mac' , 'Crab_E.Mac' ,
     'BarbMacaq',  'Gibbon', 'Orang', 'Gorilla', 'Chimp', 'Human'],
     '') || diag Dumper $taxa_block->get_taxlabels;
 
@@ -78,7 +78,7 @@ eval {
 #warn Dumper $distances_block;
 is_deeply($taxa_block->get_taxlabels, ['MouseWithVeryLongTaxaname',
     'BovineOtherLongTaxaname', 'Lemur',
-    'Tarsier',  'Squir_Monk'  ,'Jpn_Macaq' ,'Rhesus_Mac' , 'Crab-E.Mac' ,
+    'Tarsier',  'Squir_Monk'  ,'Jpn_Macaq' ,'Rhesus_Mac' , 'Crab_E.Mac' ,
     'BarbMacaq',  'Gibbon', 'Orang', 'Gorilla', 'Chimp', 'Human'],
     '') || diag Dumper $taxa_block->get_taxlabels;
 
@@ -123,8 +123,8 @@ my @files = (
 
 my %data = (
     'Turkey'     => 'AAGCTNGGGCATTTCAGGGTGAGCCCGGGCAATACAGGGTAT',
-    'Salmo gair' => 'AAGCCTTGGCAGTGCAGGGTGAGCCGTGGCCGGGCACGGTAT',
-    'H. Sapiens' => 'ACCGGTTGGCCGTTCAGGGTACAGGTTGGCCGTTCAGGGTAA',
+    'Salmo_gair' => 'AAGCCTTGGCAGTGCAGGGTGAGCCGTGGCCGGGCACGGTAT',
+    'H._Sapiens' => 'ACCGGTTGGCCGTTCAGGGTACAGGTTGGCCGTTCAGGGTAA',
     Chimp        => 'AAACCCTTGCCGTTACGCTTAAACCGAGGCCGGGACACTCAT',
     Gorilla      => 'AAACCCTTGCCGGTACGCTTAAACCATTGCCGGTACGCTTAA',
 );
@@ -140,7 +140,7 @@ foreach (@files) {
         $chars_block    = $nexus->get_block('characters');
     };
     #warn Dumper $distances_block;
-    is_deeply($taxa_block->get_taxlabels, ['Turkey',  'Salmo gair', 'H. Sapiens',
+    is_deeply($taxa_block->get_taxlabels, ['Turkey',  'Salmo_gair', 'H._Sapiens',
         'Chimp',  'Gorilla'  ],
         '') || diag Dumper $taxa_block->get_taxlabels;
 

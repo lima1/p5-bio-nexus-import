@@ -217,7 +217,10 @@ LINE:
             #remove leading and trailing whitespaces
             $label =~ s{\A \s+}{}xms;
             $label =~ s{\s+ \z}{}xms;
-            $data  =~ s{\A \s+}{}xms;
+
+            $label =~ s{-|\s}{_}xms;
+
+            $data =~ s{\A \s+}{}xms;
             my @taxondata = split /\s+/xms, $data;
 
             $taxdata[$taxon_id] = [@taxondata];
@@ -399,11 +402,8 @@ phylogeny programs.
  Usage   : Bio::NEXUS::Import->import_file($filename, $fileformat, $verbose);
  Function: Reads the contents of the specified file and populate the data 
            in the Bio::NEXUS object.
-           Supported fileformats are NEXUS, PHYLIP_DIST_SQUARE,
-           PHYLIP_DIST_SQUARE_BLANK, PHYLIP_DIST_LOWER,
-           PHYLIP_DIST_LOWER_BLANK, PHYLIP_SEQ_INTERLEAVED,
-           PHYLIP_SEQ_INTERLEAVED_BLANK, PHYLIP_SEQ_SEQUENTIAL, 
-           PHYLIP_SEQ_SEQUENTIAL_BLANK.
+           Supported fileformats are NEXUS, PHYLIP_DIST_SQUARE, PHYLIP_DIST_LOWER,
+           PHYLIP_SEQ_INTERLEAVED, PHYLIP_SEQ_SEQUENTIAL.
            If $fileformat is not defined, then this function tries to
            detect the correct format. NEXUS files are parsed with
            Bio::NEXUS->read_file();
